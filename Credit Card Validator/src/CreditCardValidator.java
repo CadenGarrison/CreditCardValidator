@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.io.File;
 import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.ArrayList;
 
 public class CreditCardValidator
@@ -21,7 +22,7 @@ public class CreditCardValidator
 		static long counter;
 		static int failCounter;
 		static int validCounter;
-		//static boolean result;
+		static boolean result;
 		static long primitivePersonalNumber;
 		static Long personalNumber;
 		
@@ -35,21 +36,36 @@ public class CreditCardValidator
 				{
 					System.out.println("An I/O error occurred: " + exc.getMessage());
 				}
-			
-			System.out.println("Welcome to the credit card verifier. Would you like to (1) Verify the existing numbers or (2) Verify your own number?");
-			selection = userInput.nextInt();
-			if (selection == 1)
+			try
 				{
-					System.out.println("You are verifying the existing numbers.");
-					System.out.println(" ");
-					verifyNumbers(creditCardNumbers);
+					System.out.println("Welcome to the credit card verifier. Would you like to (1) Verify the existing numbers or (2) Verify your own number?");
+					selection = userInput.nextInt();
+					if (selection == 1)
+						{
+							System.out.println("You are verifying the existing numbers.");
+							System.out.println(" ");
+							verifyNumbers(creditCardNumbers);
+						}
+					else if (selection == 2)
+						{
+							System.out.println("What is your number?");
+							primitivePersonalNumber = userLongInput.nextLong();
+							personalNumber = primitivePersonalNumber;
+							result = verifyPersonalNumber(personalNumber);
+							if (result)
+								{
+									System.out.println("That number is valid.");
+								}
+							else 
+								{
+									System.out.println("That number is NOT valid.");
+								}
+						}
 				}
-			else if (selection ==2)
+			
+			catch (InputMismatchException exc)
 				{
-					System.out.println("What is your number?");
-					primitivePersonalNumber = userLongInput.nextLong();
-					personalNumber = primitivePersonalNumber;
-					verifyPersonalNumber(personalNumber);
+					System.out.println("Don't put your number in yet, blockhead.");
 				}
 		}
 		
@@ -117,7 +133,7 @@ public class CreditCardValidator
 			System.out.println("There were " + validCounter + " valid numbers and " + failCounter + " invalid numbers.");
 		}
 		
-		public static void verifyPersonalNumber(Long num)
+		public static boolean verifyPersonalNumber(Long num)
 		{
 			
 				wordNumber = num.toString();
@@ -154,15 +170,18 @@ public class CreditCardValidator
 				}
 				if (counter%10 == 0)
 				{
-					System.out.println(personalNumber + " is a valid credit card number.");
+					return true;
+					//System.out.println(personalNumber + " is a valid credit card number.");
 				}
 				else if (counter%10 != 0)
 				{
-					System.out.println(personalNumber + " is NOT a valid credit card number.");
+					return false;
+					//System.out.println(personalNumber + " is NOT a valid credit card number.");
 				}
 				else
 				{
-					System.out.println(personalNumber + " is NOT a valid credit card number.");
+					return false;
+					//System.out.println(personalNumber + " is NOT a valid credit card number.");
 				}
 				
 		}
